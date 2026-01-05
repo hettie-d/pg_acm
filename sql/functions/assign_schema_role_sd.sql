@@ -1,6 +1,6 @@
-drop function if exists acm_tools.assign_schema_role_sd (text, text,text,text);
+drop function if exists pg_acm.assign_schema_role_sd (text, text,text,text);
 
-create or replace function acm_tools.assign_schema_role_sd (p_schema_name text,
+create or replace function pg_acm.assign_schema_role_sd (p_schema_name text,
 p_role text,
 p_srv_user text,
 p_password text default null,
@@ -13,8 +13,8 @@ v_sql text;
 v_cnt int;
 v_role_name text;
 BEGIN
-  if not acm_tools.check_stack('acm_tools.assign_schema_role ')
-    and not acm_tools.check_stack('acm_tools.create_schema_roles')
+  if not pg_acm.check_stack('pg_acm.assign_schema_role ')
+    and not pg_acm.check_stack('pg_acm.create_schema_roles')
      then
      raise exception 'You are not allowed to assign roles in schema %', p_schema_name;
   end if;
@@ -47,4 +47,4 @@ END;
 $func$
 language plpgsql security definer;
 
-revoke execute on function acm_tools.assign_schema_role_sd (text, text,text,text,boolean) from public;
+revoke execute on function pg_acm.assign_schema_role_sd (text, text,text,text,boolean) from public;

@@ -1,25 +1,25 @@
-# acm_tools User Guide
+# pg_acm User Guide
 
 ## Functions provided
 
 | Function name | Description | Permissions Needed |
 |---------------|-------------|--------------------|
-| `acm_tools.perm_create_cust_account(account_name)` | creates a new account | `database owner` |
-| `acm_tools.perm_drop_cust_account(account_name)` | drops an account | `database owner` |
-| `acm_tools.perm_assign_schema_schema_owner_role(schema_name, schema_owner_name, schema_owner_password)` | assigns schema owner roles to users| `account owner` |
-| `acm_tools.perm_revoke_schema_schema_owner_role(schema_name, schema_owner_name)` | revokes schema owner roles from users | `account owner` |
-| `acm_tools.perm_assign_account_role(account_name, role_name, role_password)` | assigns account owner roles to users | `account owner` |
-| `acm_tools.perm_assign_schema_app_role(schema_name, app_user_name, app_user_password)` | assigns read_write roles to users | `account owner` |
-| `acm_tools.perm_revoke_schema_app_role(schema_name, app_user_name)` | revokes read_write roles from users | `account owner` |
-| `acm_tools.perm_assign_schema_ro_role(schema_name, ro_user_name, ro_user_password)` | assigns read_only roles to users | `account owner` |
-| `acm_tools.perm_revoke_schema_ro_role(schema_name, ro_user_name)` | revokes read_only roles from users  | `account owner` |
+| `pg_acm.perm_create_cust_account(account_name)` | creates a new account | `database owner` |
+| `pg_acm.perm_drop_cust_account(account_name)` | drops an account | `database owner` |
+| `pg_acm.perm_assign_schema_schema_owner_role(schema_name, schema_owner_name, schema_owner_password)` | assigns schema owner roles to users| `account owner` |
+| `pg_acm.perm_revoke_schema_schema_owner_role(schema_name, schema_owner_name)` | revokes schema owner roles from users | `account owner` |
+| `pg_acm.perm_assign_account_role(account_name, role_name, role_password)` | assigns account owner roles to users | `account owner` |
+| `pg_acm.perm_assign_schema_app_role(schema_name, app_user_name, app_user_password)` | assigns read_write roles to users | `account owner` |
+| `pg_acm.perm_revoke_schema_app_role(schema_name, app_user_name)` | revokes read_write roles from users | `account owner` |
+| `pg_acm.perm_assign_schema_ro_role(schema_name, ro_user_name, ro_user_password)` | assigns read_only roles to users | `account owner` |
+| `pg_acm.perm_revoke_schema_ro_role(schema_name, ro_user_name)` | revokes read_only roles from users  | `account owner` |
 
 ## How to use
 
 ### Create new account
 
 ```
-SELECT * FROM acm_tools.create_cust_account (
+SELECT * FROM pg_acm.create_cust_account (
   'account1'
 );
 ```
@@ -28,7 +28,7 @@ SELECT * FROM acm_tools.create_cust_account (
 ### Create a user for an account
 
 ```
-SELECT * FROM acm_tools.assign_account_role(
+SELECT * FROM pg_acm.assign_account_role(
 	p_account_name => 'account1',
 	p_acct_user => 'acct_user1',
 	p_acct_user_password => 'acct_user_pwd'
@@ -56,19 +56,19 @@ Additional functions allow granting these roles to users.
 In each case, a corresponding function would check whether the user exists, and create it if it doesn't exist, and assign the corresponding privilege and the search_path. If the user already exists, the password is not needed, and will be ignored if provided.
 
 ```
-SELECT * FROM acm_tools.assign_schema_app_role (
+SELECT * FROM pg_acm.assign_schema_app_role (
   'schema_name',
   'app_user_name',
   'app_user_password'
 );
 
-SELECT * FROM acm_tools.assign_schema_schema_owner_role (
+SELECT * FROM pg_acm.assign_schema_schema_owner_role (
   'schema_name',
   'schema_owner_user_name',
   'schema_owner_password'
 );
 
-SELECT * FROM acm_tools.assign_schema_ro_role (
+SELECT * FROM pg_acm.assign_schema_ro_role (
   'schema_name',
   'ro_user_name',
   'ro_user_password'
@@ -86,7 +86,7 @@ All ```assign``` functions have an additional boolean parameter p_update_search_
 New app user, don't update search path
 
 ```
-SELECT * FROM acm_tools.assign_schema_app_role (
+SELECT * FROM pg_acm.assign_schema_app_role (
   'schema_name',
   'app_user_name',
   'app_user_password',
@@ -97,7 +97,7 @@ SELECT * FROM acm_tools.assign_schema_app_role (
 Existing user, update the search path:
 
 ```
-SELECT * FROM acm_tools.assign_schema_ro_role (
+SELECT * FROM pg_acm.assign_schema_ro_role (
   'schema_name',
   'ro_user_name',
   null,
@@ -108,17 +108,17 @@ SELECT * FROM acm_tools.assign_schema_ro_role (
 ### Matching “revoke” functions for each user category
 
 ```
-SELECT * FROM acm_tools.revoke_schema_app_role (
+SELECT * FROM pg_acm.revoke_schema_app_role (
   'schema_name',
   'app_user_name'
 );
 
-SELECT * FROM acm_tools.revoke_schema_schema_owner_role (
+SELECT * FROM pg_acm.revoke_schema_schema_owner_role (
   'schema_name',
   'schema_owner_user_name'
 );
 
-SELECT * FROM acm_tools.revoke_schema_ro_role (
+SELECT * FROM pg_acm.revoke_schema_ro_role (
   'schema_name',
   'ro_user_name'
 );
@@ -128,13 +128,13 @@ SELECT * FROM acm_tools.revoke_schema_ro_role (
 
 |Function name | Description | Permissions Needed |
 |---------------|-------------|--------------------|
-| `acm_tools.create_role('new_role')` | Creates a new role without permissions| `database owner` |
-| `acm_tools.assign_role('new_role','new_user','passwd')` | grants previously created role to a new or existing user; leave password null fo existing user | `database owner` |
+| `pg_acm.create_role('new_role')` | Creates a new role without permissions| `database owner` |
+| `pg_acm.assign_role('new_role','new_user','passwd')` | grants previously created role to a new or existing user; leave password null fo existing user | `database owner` |
 
 ## Other administrative functions
 
 | Function name | Description | Permissions Needed |
 |---------------|-------------|--------------------|
-| `acm_tools.terminate_process(pid)` | kills any non-superuser session | `database owner` |
-| `acm_tools.db_direct_privs_select()` | lists all directly granted privileges | `database owner` |
-| `acm_tools.db_all_privs_select()` | lists all atomic privileges for all db users | `database owner` |
+| `pg_acm.terminate_process(pid)` | kills any non-superuser session | `database owner` |
+| `pg_acm.db_direct_privs_select()` | lists all directly granted privileges | `database owner` |
+| `pg_acm.db_all_privs_select()` | lists all atomic privileges for all db users | `database owner` |

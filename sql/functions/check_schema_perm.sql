@@ -1,4 +1,4 @@
-create or replace function acm_tools.check_schema_perm(p_schema_name text)
+create or replace function pg_acm.check_schema_perm(p_schema_name text)
 returns boolean language sql
 as
 $$
@@ -27,4 +27,4 @@ select
 );
 $$;
 
-revoke execute on function acm_tools.check_schema_perm from public;
+revoke execute on function pg_acm.check_schema_perm from public;

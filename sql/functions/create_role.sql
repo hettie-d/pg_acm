@@ -1,4 +1,4 @@
-create or replace function acm_tools.create_role(p_role_name text)
+create or replace function pg_acm.create_role(p_role_name text)
 
 RETURNS text
 AS
@@ -7,11 +7,11 @@ DECLARE
 v_sql text;
 v_cnt int;
 BEGIN
-   select count(*) into v_cnt from acm_tools.allowed_role where role_name=p_role_name;
+   select count(*) into v_cnt from pg_acm.allowed_role where role_name=p_role_name;
     if v_cnt>0 then
        raise exception 'Role % already exists', p_role_name;
     else
-       insert into acm_tools.allowed_role (role_name) values (p_role_name);
+       insert into pg_acm.allowed_role (role_name) values (p_role_name);
   end if;
   select count(*) into v_cnt from pg_authid where rolname=p_role_name;
   if v_cnt>0 then
@@ -24,5 +24,4 @@ BEGIN
 END;
 $func$
 language plpgsql security definer;
-revoke execute on function acm_tools.create_role(text) from public;
-
+revoke execute on function pg_acm.create_role(text) from public;

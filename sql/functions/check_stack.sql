@@ -1,4 +1,4 @@
-create or replace function acm_tools.check_stack(p_outer_function text)
+create or replace function pg_acm.check_stack(p_outer_function text)
 returns boolean
 as $func$
 declare
@@ -8,4 +8,4 @@ begin
  return  (position (p_outer_function in v_stack)>0);
 end;
 $func$ language plpgsql security definer;
-revoke execute on function acm_tools.check_stack from public;
+revoke execute on function pg_acm.check_stack from public;

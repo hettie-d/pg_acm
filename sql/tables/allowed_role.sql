@@ -1,3 +1,3 @@
-create table if not exists acm_tools.allowed_role (
+create table if not exists pg_acm.allowed_role (
   role_name text primary key
 );

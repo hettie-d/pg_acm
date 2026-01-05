@@ -1,4 +1,4 @@
-create or replace function acm_tools.create_role_for_schema(
+create or replace function pg_acm.create_role_for_schema(
   p_schema_name text,
   p_select boolean default false,
   p_insert boolean default false,
@@ -78,11 +78,11 @@ BEGIN
   v_sql_grant:=substr(v_sql_grant,1,length(v_sql_grant)-1);
   v_sql_default:=substr(v_sql_default,1,length(v_sql_default)-1);
 
-  select count(*) into v_cnt from acm_tools.allowed_role where role_name=v_role_name;
+  select count(*) into v_cnt from pg_acm.allowed_role where role_name=v_role_name;
   if v_cnt>0 then
     raise exception 'Role % already exists', v_role_name;
   else
-    insert into acm_tools.allowed_role (role_name) values (v_role_name);
+    insert into pg_acm.allowed_role (role_name) values (v_role_name);
   end if;
 
   select count(*) into v_cnt from pg_authid where rolname=v_role_name;
@@ -108,5 +108,4 @@ BEGIN
 END;
 $func$
 language plpgsql security definer;
-revoke execute on function acm_tools.create_role_for_schema (text, boolean, boolean, boolean, boolean, boolean) from public;
-
+revoke execute on function pg_acm.create_role_for_schema (text, boolean, boolean, boolean, boolean, boolean) from public;

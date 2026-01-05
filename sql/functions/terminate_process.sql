@@ -1,4 +1,4 @@
-create or replace function acm_tools.terminate_process(p_pid int)
+create or replace function pg_acm.terminate_process(p_pid int)
 returns boolean
 language plpgsql
 security definer as
@@ -14,7 +14,7 @@ if v_usename is null
    or v_usename in ('autocat', 'drwdba_owner', 'nagios', 'postgres')
  then return false;
  end if;
- insert into acm_tools.killed_processes
+ insert into pg_acm.killed_processes
     (pid,
      usename,
      query,
@@ -26,4 +26,4 @@ if v_usename is null
  return pg_terminate_backend(p_pid);
  end;
  $function$;
- revoke execute on function acm_tools.terminate_process(p_pid int) from public;
+ revoke execute on function pg_acm.terminate_process(p_pid int) from public;

@@ -1,4 +1,4 @@
-create or replace function acm_tools.create_schema_sd (
+create or replace function pg_acm.create_schema_sd (
    p_schema_name text,
    p_schema_admin text,
    p_schema_owner_setting boolean)
@@ -15,7 +15,7 @@ DECLARE
    v_read_only_role text:=p_schema_name||'_read_only';
    v_read_write_role text:=p_schema_name||'_read_write';
 BEGIN
-  if not acm_tools.check_stack('acm_tools.create_schema') then
+  if not pg_acm.check_stack('pg_acm.create_schema') then
     raise exception 'You are not allowed to create schemas: please connect as a database/account owner';
   end if;
   if length(p_schema_name)>54 then
@@ -75,4 +75,4 @@ BEGIN
 END;
 $create_schema$
 language plpgsql security definer;
-revoke execute on function acm_tools.create_schema_sd from public;
+revoke execute on function pg_acm.create_schema_sd from public;

@@ -1,4 +1,4 @@
-create or replace function acm_tools.assign_role(p_role_name text,
+create or replace function pg_acm.assign_role(p_role_name text,
 p_user text,
 p_password text default null)
 
@@ -9,7 +9,7 @@ DECLARE
 v_sql text;
 v_cnt int;
 BEGIN
-   select count(*) into v_cnt from acm_tools.allowed_role where role_name=p_role_name;
+   select count(*) into v_cnt from pg_acm.allowed_role where role_name=p_role_name;
     if v_cnt=0 then
        raise exception 'Role % is not allowed', p_role_name;
   end if;
@@ -33,5 +33,4 @@ BEGIN
 END;
 $func$
 language plpgsql security definer;
-revoke execute on function acm_tools.assign_role from public;
-
+revoke execute on function pg_acm.assign_role from public;

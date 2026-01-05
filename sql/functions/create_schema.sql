@@ -1,4 +1,4 @@
-create or replace function acm_tools.create_schema(
+create or replace function pg_acm.create_schema(
    p_schema_name text)
 --security invoker
 returns text
@@ -29,10 +29,10 @@ begin
             select member::text, role::text
               from x
               where member::text=current_user
-                and role::text in (select account_role_name from acm_tools.account_role)
+                and role::text in (select account_role_name from pg_acm.account_role)
             union
             select account_role_name, account_role_name
-              from acm_tools.account_role
+              from pg_acm.account_role
               where account_role_name=current_user
            ) a;
     case (v_cnt)
@@ -52,20 +52,19 @@ begin
             select distinct substr(role::text,1, length(role::text)-6) into v_account
               from  (select member::text, role::text from x
               where member::text=current_user
-                and role::text in (select account_role_name from acm_tools.account_role)
+                and role::text in (select account_role_name from pg_acm.account_role)
             union
             select account_role_name, account_role_name
-              from acm_tools.account_role
+              from pg_acm.account_role
               where account_role_name=current_user
           ) a;
       else
         raise exception 'Please switch to account onwer role to create schema %', p_schema_name;
     end case;
     v_schema_admin :=v_account||'_owner';
-  return (select acm_tools.create_schema_sd(
+  return (select pg_acm.create_schema_sd(
               p_schema_name,
               v_schema_admin,
               v_schema_owner_setting));
   end;
 $create_schema$;
-

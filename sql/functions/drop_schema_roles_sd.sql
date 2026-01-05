@@ -1,4 +1,4 @@
-create or replace function acm_tools.drop_schema_roles_sd(
+create or replace function pg_acm.drop_schema_roles_sd(
   p_schema_name text)
     returns text
     language 'plpgsql' security definer
@@ -10,7 +10,7 @@ v_schema_owner text=p_schema_name||'_owner';
 v_read_only_role text:=p_schema_name||'_read_only';
 v_read_write_role text:=p_schema_name||'_read_write';
 begin
-  if not acm_tools.check_stack('acm_tools.drop_roles_for_schema')
+  if not pg_acm.check_stack('pg_acm.drop_roles_for_schema')
   then
   raise exception 'you are not allowed to drop schema %', p_schema_name;
 end if;
@@ -43,5 +43,4 @@ return v_sql;
 end;
 $body$;
 
-revoke execute on function acm_tools.drop_schema_roles_sd(text) from public;
-
+revoke execute on function pg_acm.drop_schema_roles_sd(text) from public;

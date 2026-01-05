@@ -1,4 +1,4 @@
-create or replace function acm_tools.fix_owner_grants()
+create or replace function pg_acm.fix_owner_grants()
   returns event_trigger
   language 'plpgsql' security definer
   as $body$
@@ -26,7 +26,7 @@ begin
           grant select on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_only;
           grant select,insert,update,delete, truncate on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
           $$;
-          for v_roles in (select role_name from acm_tools.allowed_role
+          for v_roles in (select role_name from pg_acm.allowed_role
                           where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             v_cond :='grant ';
             if v_roles.role_name like v_obj.schema_name||'_s%' then
@@ -52,7 +52,7 @@ begin
             grant select on table $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_only;
             grant select on table $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
             $$;
-          for v_roles in (select role_name from acm_tools.allowed_role
+          for v_roles in (select role_name from pg_acm.allowed_role
                           where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             if v_roles.role_name like v_obj.schema_name||'_s%' then
               v_sql:=v_sql ||$$;
@@ -63,7 +63,7 @@ begin
           v_sql:=v_sql ||$$;
           grant usage on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
           $$;
-          for v_roles in (select role_name from acm_tools.allowed_role
+          for v_roles in (select role_name from pg_acm.allowed_role
                           where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             if v_roles.role_name like v_obj.schema_name||'_%i%' then
               v_sql:=v_sql ||$$;
@@ -78,7 +78,7 @@ begin
 end;
 $body$;
 
-create or replace function acm_tools.create_roles_for_schema()
+create or replace function pg_acm.create_roles_for_schema()
   returns event_trigger
   language 'plpgsql'
 as $body$
@@ -94,21 +94,21 @@ begin
   v_current_user := current_user;
   if exists (select 1 from  pg_event_trigger
            where evtname='fix_owner_grants' and evtenabled='O')
-  then  
+  then
     if  v_current_user='postgres'
     then
       raise exception 'need to be a database owner/account owner to create schemas';
-    else 
+    else
       for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc loop
         v_schema_name:= v_obj.object_identity;
       end loop;
-      select acm_tools.create_schema(v_schema_name) into v_result;
+      select pg_acm.create_schema(v_schema_name) into v_result;
      end if;
-  end if;  
+  end if;
 end;
 $body$;
 
-create or replace function acm_tools.drop_roles_for_schema()
+create or replace function pg_acm.drop_roles_for_schema()
   returns event_trigger
   language 'plpgsql'
 as $body$
@@ -124,7 +124,7 @@ begin
   v_current_user := current_user;
   if exists (select 1 from  pg_event_trigger
              where evtname='fix_owner_grants' and evtenabled='O')
-  then 
+  then
     if v_current_user='postgres'
     then
       raise exception 'need to be a schema owner to drop a schema';
@@ -132,8 +132,8 @@ begin
       select object_identity into v_schema_name
       from pg_event_trigger_dropped_objects()
       where object_type='schema';
-      select acm_tools.drop_schema_roles_sd(v_schema_name) into v_result;
+      select pg_acm.drop_schema_roles_sd(v_schema_name) into v_result;
     end if;
-  end if;  
+  end if;
 end;
 $body$;

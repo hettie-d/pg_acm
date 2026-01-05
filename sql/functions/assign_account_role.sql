@@ -1,4 +1,4 @@
-create or replace function acm_tools.assign_account_role(p_account_name text,
+create or replace function pg_acm.assign_account_role(p_account_name text,
 p_acct_user text,
 p_acct_user_password text default null)
 RETURNS text
@@ -8,7 +8,7 @@ DECLARE
 v_sql text;
 v_cnt int;
 BEGIN
-  select count(*) into v_cnt from acm_tools.account_role where account_role_name=p_account_name||'_owner';
+  select count(*) into v_cnt from pg_acm.account_role where account_role_name=p_account_name||'_owner';
   if v_cnt=0 then
      raise exception 'Account % does not exist', p_account_name;
   end if;
@@ -32,4 +32,4 @@ BEGIN
 END;
 $func$
 language plpgsql security definer;
-revoke execute on function acm_tools.assign_account_role from public;
+revoke execute on function pg_acm.assign_account_role from public;

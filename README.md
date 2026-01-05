@@ -1,8 +1,8 @@
 # pg_acm
 
-## Description 
+## Description
 
-`pg_acm` is a tools for access control management. 
+`pg_acm` is a tools for access control management.
 
 I encorage everyone interested to try it, and if you find it useful, please help me to advocated to add this functionality to Postgres!
 
@@ -25,7 +25,7 @@ alter database my_db owner to mydb_owner;
 * invoke pg_acm by running as a superuser:
 
 ```
-select * from acm_tools.enable_security();
+select * from pg_acm.enable_security();
 
 ```
 **For detailed functionality description, please refer to the User Manual.**

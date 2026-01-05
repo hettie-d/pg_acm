@@ -1,4 +1,4 @@
-create or replace function acm_tools.create_cust_account (p_acct_name text)
+create or replace function pg_acm.create_cust_account (p_acct_name text)
 returns text
 language plpgsql security definer
 as $body$
@@ -17,27 +17,27 @@ begin
   if v_cnt=0 then --new role
     execute $$create role $$|| v_sql_role;
   end if;
-  insert into acm_tools.account_role values (v_sql_role) on conflict do nothing;
+  insert into pg_acm.account_role values (v_sql_role) on conflict do nothing;
   v_sql:=format($sql$
-  grant usage on schema acm_tools to %s;
-  grant select on acm_tools.account_role to %s;
+  grant usage on schema pg_acm to %s;
+  grant select on pg_acm.account_role to %s;
   grant %s to %s;
-  grant execute on function acm_tools.check_schema_perm to %s;
-  grant execute on function acm_tools.check_stack to %s;
-  grant execute on function acm_tools.create_schema to %s;
-  grant execute on function acm_tools.create_schema_sd to %s;
-  grant execute on function acm_tools.create_role_for_schema to %s;
-  grant execute on function acm_tools.drop_schema_roles_sd to %s;
-  grant execute on function acm_tools.assign_schema_role to %s;
-  grant execute on function acm_tools.assign_schema_role_sd to %s;
-  grant execute on function acm_tools.revoke_role to %s;
-  grant execute on function acm_tools.revoke_role_sd to %s;
-  grant execute on function acm_tools.assign_schema_app_role to %s;
-  grant execute on function acm_tools.assign_schema_schema_owner_role to %s;
-  grant execute on function acm_tools.assign_schema_ro_role to %s;
-  grant execute on function acm_tools.revoke_schema_app_role to %s;
-  grant execute on function acm_tools.revoke_schema_schema_owner_role to %s;
-  grant execute on function acm_tools.revoke_schema_ro_role to %s;
+  grant execute on function pg_acm.check_schema_perm to %s;
+  grant execute on function pg_acm.check_stack to %s;
+  grant execute on function pg_acm.create_schema to %s;
+  grant execute on function pg_acm.create_schema_sd to %s;
+  grant execute on function pg_acm.create_role_for_schema to %s;
+  grant execute on function pg_acm.drop_schema_roles_sd to %s;
+  grant execute on function pg_acm.assign_schema_role to %s;
+  grant execute on function pg_acm.assign_schema_role_sd to %s;
+  grant execute on function pg_acm.revoke_role to %s;
+  grant execute on function pg_acm.revoke_role_sd to %s;
+  grant execute on function pg_acm.assign_schema_app_role to %s;
+  grant execute on function pg_acm.assign_schema_schema_owner_role to %s;
+  grant execute on function pg_acm.assign_schema_ro_role to %s;
+  grant execute on function pg_acm.revoke_schema_app_role to %s;
+  grant execute on function pg_acm.revoke_schema_schema_owner_role to %s;
+  grant execute on function pg_acm.revoke_schema_ro_role to %s;
   grant create on database %s to %s;
   $sql$,
   v_sql_role,
@@ -66,4 +66,4 @@ begin
  execute v_sql;
 return v_sql;
 end; $body$;
-revoke execute on function acm_tools.create_cust_account from public;
+revoke execute on function pg_acm.create_cust_account from public;

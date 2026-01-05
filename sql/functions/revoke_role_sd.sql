@@ -1,6 +1,6 @@
-drop function if exists acm_tools.revoke_role_sd(text, text, text);
+drop function if exists pg_acm.revoke_role_sd(text, text, text);
 
-create or replace function acm_tools.revoke_role_sd (
+create or replace function pg_acm.revoke_role_sd (
   p_schema_name text,
   p_role text,
   p_srv_user text)
@@ -9,10 +9,10 @@ as
 $func$
 declare
   v_sql text;
-  v_role_name text; 
+  v_role_name text;
   v_cnt int;
 begin
-   if not acm_tools.check_stack('acm_tools.revoke_role')
+   if not pg_acm.check_stack('pg_acm.revoke_role')
      then
      raise exception 'you are not allowed to manage roles in schema %', p_schema_name;
   end if;
@@ -28,4 +28,4 @@ end;
 $func$
 language plpgsql security definer;
 
-revoke execute on function acm_tools.revoke_role_sd from public;
+revoke execute on function pg_acm.revoke_role_sd from public;

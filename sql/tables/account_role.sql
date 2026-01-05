@@ -1,3 +1,3 @@
-create table if not exists acm_tools.account_role (
+create table if not exists pg_acm.account_role (
   account_role_name text primary key
 );

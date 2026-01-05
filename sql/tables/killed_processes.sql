@@ -1,4 +1,4 @@
-create table if not exists acm_tools.killed_processes (
+create table if not exists pg_acm.killed_processes (
   pid int,
   usename text,
   query text,

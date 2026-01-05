@@ -1,23 +1,23 @@
-drop type if exists acm_tools.users cascade;
-create type acm_tools.users as (
+drop type if exists pg_acm.users cascade;
+create type pg_acm.users as (
 user_name text,
 max_connections integer
 );
 
-drop type if exists acm_tools.schema_roles_record cascade;
-create type acm_tools.schema_roles_record as(
+drop type if exists pg_acm.schema_roles_record cascade;
+create type pg_acm.schema_roles_record as(
 schema_name text,
 schema_owner text,
-owner_users acm_tools.users[],
+owner_users pg_acm.users[],
 read_only_role text,
-read_users acm_tools.users[],
+read_users pg_acm.users[],
 read_write_role text,
-app_users acm_tools.users[]
+app_users pg_acm.users[]
 );
 
---select * from acm_tools.list_schemas_roles_flat ()
-create or replace function acm_tools.list_schemas_roles_flat ()
-returns setof acm_tools.schema_roles_record
+--select * from pg_acm.list_schemas_roles_flat ()
+create or replace function pg_acm.list_schemas_roles_flat ()
+returns setof pg_acm.schema_roles_record
 language plpgsql
 as
 $body$
@@ -39,7 +39,7 @@ r.rolname::text as schema_owner,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
@@ -64,7 +64,7 @@ end as read_only_role,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
@@ -89,7 +89,7 @@ end as read_write_role,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
@@ -100,21 +100,21 @@ from pg_namespace s
 join pg_roles r
 on r.oid=s.nspowner
 where nspacl is not null
-and  nspname not in ('pg_catalog', 'information_schema', 'acm_tools', 'public')
+and  nspname not in ('pg_catalog', 'information_schema', 'pg_acm', 'public')
 order by nspname;
 end;
 $body$;
 
 
---select to_json(acm_tools.list_schemas_roles ())
-create or replace function acm_tools.list_schemas_roles ()
-returns  acm_tools.schema_roles_record[]
+--select to_json(pg_acm.list_schemas_roles ())
+create or replace function pg_acm.list_schemas_roles ()
+returns  pg_acm.schema_roles_record[]
 language plpgsql
 as
 $body$
 declare
 v_sql text;
-v_result acm_tools.schema_roles_record[];
+v_result pg_acm.schema_roles_record[];
 begin
 v_sql:= $$select array_agg(
 row(s.nspname::text ,
@@ -133,7 +133,7 @@ r.rolname::text ,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
@@ -158,7 +158,7 @@ end ,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
@@ -183,26 +183,26 @@ end,
     join x on m.member = x.role
   )
   select array_agg(row(member,
-  rolconnlimit )::acm_tools.users)
+  rolconnlimit )::pg_acm.users)
   from x
    join pg_roles pr on
    x.member::text=pr.rolname::text
   where  x.role::text= s.nspname||'_read_write'
   and pr.rolcanlogin is true
-  ))::acm_tools.schema_roles_record)
+  ))::pg_acm.schema_roles_record)
 from pg_namespace s
 join pg_roles r
 on r.oid=s.nspowner
 where nspacl is not null
-and  nspname not in ('pg_catalog', 'information_schema', 'acm_tools', 'public')
+and  nspname not in ('pg_catalog', 'information_schema', 'pg_acm', 'public')
 $$;
 execute v_sql into v_result;
 return  v_result;
 end;
 $body$;
 
-drop type if exists acm_tools.db_privs_record cascade;
-create type acm_tools.db_privs_record as (
+drop type if exists pg_acm.db_privs_record cascade;
+create type pg_acm.db_privs_record as (
    priv_type text,
    object_name text,
    role_user_name name,
@@ -210,8 +210,8 @@ create type acm_tools.db_privs_record as (
    permission text
 );
 
-create or replace function acm_tools.db_direct_privs_select ()
-returns setof acm_tools.db_privs_record
+create or replace function pg_acm.db_direct_privs_select ()
+returns setof pg_acm.db_privs_record
 language plpgsql
 as
 $body$
@@ -279,8 +279,8 @@ where rolname !='postgres'
 ;
 end ;$body$;
 
-create or replace function acm_tools.db_all_privs_select ()
-returns setof acm_tools.db_privs_record
+create or replace function pg_acm.db_all_privs_select ()
+returns setof pg_acm.db_privs_record
 language plpgsql
 as
 $body$
@@ -386,4 +386,3 @@ on ir.roleid=r.oid
 where member::text !='postgres'
 )a;
 end ;$body$;
-
