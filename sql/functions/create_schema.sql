@@ -1,5 +1,5 @@
 create or replace function acm_tools.create_schema(
-   p_schema_name text)
+  p_schema_name text)
 --security invoker
 returns text
 language plpgsql  as
@@ -42,15 +42,15 @@ begin
         with recursive x as
           (
             select member::regrole,
-                  roleid::regrole as role
+                   roleid::regrole as role
               from pg_auth_members as m
             union all
             select x.member::regrole,
-                  m.roleid::regrole
+                   m.roleid::regrole
               from pg_auth_members as m
             join x on m.member = x.role)
             select distinct substr(role::text,1, length(role::text)-6) into v_account
-              from  (select member::text, role::text from x
+              from (select member::text, role::text from x
               where member::text=current_user
                 and role::text in (select account_role_name from acm_tools.account_role)
             union
@@ -63,9 +63,8 @@ begin
     end case;
     v_schema_admin :=v_account||'_owner';
   return (select acm_tools.create_schema_sd(
-              p_schema_name,
-              v_schema_admin,
-              v_schema_owner_setting));
+            p_schema_name,
+            v_schema_admin,
+            v_schema_owner_setting));
   end;
 $create_schema$;
-

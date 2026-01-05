@@ -108,5 +108,5 @@ BEGIN
 END;
 $func$
 language plpgsql security definer;
-revoke execute on function acm_tools.create_role_for_schema (text, boolean, boolean, boolean, boolean, boolean) from public;
 
+revoke execute on function acm_tools.create_role_for_schema (text, boolean, boolean, boolean, boolean, boolean) from public;
