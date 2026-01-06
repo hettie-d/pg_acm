@@ -105,7 +105,6 @@ order by nspname;
 end;
 $body$;
 
-
 --select to_json(acm_tools.list_schemas_roles ())
 create or replace function acm_tools.list_schemas_roles ()
 returns  acm_tools.schema_roles_record[]
@@ -386,4 +385,3 @@ on ir.roleid=r.oid
 where member::text !='postgres'
 )a;
 end ;$body$;
-

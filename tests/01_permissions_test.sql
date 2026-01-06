@@ -129,7 +129,7 @@ set role postgres;
 select is(substr (settings,13), (select search_path from acct_search_path), $$Search_path didn't change$$)
   from (select usename, unnest(useconfig) as settings from pg_shadow) a
   where substr (settings, 1, 12) ='search_path=' and usename ='ro23_user';
-  
+
 select lives_ok($$set role acct_user1$$,'role set to acct_user1');
 
 select lives_ok($$select * from acm_tools.assign_schema_schema_owner_role
@@ -158,14 +158,13 @@ a int,
 b int
 );$$, 'user owner23_user can create temporary tables');
 
-
 select lives_ok($$set role app23_user;$$,'role set to app23_user');
 
 select lives_ok($$insert into acct2_schema3.table231 values (1,2);$$,
  'user app23_user can insert into tables in schema acct2_schema3');
- 
+
 select lives_ok($$truncate table acct2_schema3.table231;$$,
- 'user app23_user can truncate tables in schema acct2_schema3'); 
+ 'user app23_user can truncate tables in schema acct2_schema3');
 
 select lives_ok($$set role ro23_user;$$,'role set to ro23_user');
 
@@ -179,7 +178,6 @@ select lives_ok($$drop schema acct2_schema3 cascade;$$, 'drop schema acct2_schem
 select hasnt_role ('acct2_schema3_owner', 'Role acct2_schema3_owner was dropped');
 select hasnt_role ('acct2_schema3_read_write', 'Role acct2_schema3_read_write was dropped');
 select hasnt_role ('acct2_schema3_read_only', 'Role acct2_schema3_read_only was dropped');
-
 
 SELECT * FROM finish();
 set role postgres;

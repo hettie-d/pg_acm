@@ -24,10 +24,10 @@ begin
         when upper(v_obj.object_type) ='TABLE' then
           v_sql:=v_sql ||$$;
           grant select on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_only;
-          grant select,insert,update,delete, truncate on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
+          grant select,insert,update,delete,truncate on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
           $$;
           for v_roles in (select role_name from acm_tools.allowed_role
-                          where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
+                            where role_name similar to v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             v_cond :='grant ';
             if v_roles.role_name like v_obj.schema_name||'_s%' then
               v_cond:=v_cond||' select,';
@@ -53,7 +53,7 @@ begin
             grant select on table $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
             $$;
           for v_roles in (select role_name from acm_tools.allowed_role
-                          where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
+                            where role_name similar to v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             if v_roles.role_name like v_obj.schema_name||'_s%' then
               v_sql:=v_sql ||$$;
               grant select on table $$||v_obj.object_identity||$$ to $$||v_roles.role_name;
@@ -64,7 +64,7 @@ begin
           grant usage on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_obj.schema_name||$$_read_write;
           $$;
           for v_roles in (select role_name from acm_tools.allowed_role
-                          where role_name similar to  v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
+                            where role_name similar to v_obj.schema_name||'_s?i?u?d?t?' escape '') loop
             if v_roles.role_name like v_obj.schema_name||'_%i%' then
               v_sql:=v_sql ||$$;
               grant usage on $$||v_obj.object_type||$$ $$||v_obj.object_identity||$$ to $$||v_roles.role_name;
@@ -92,19 +92,19 @@ declare
   v_result text;
 begin
   v_current_user := current_user;
-  if exists (select 1 from  pg_event_trigger
-           where evtname='fix_owner_grants' and evtenabled='O')
-  then  
-    if  v_current_user='postgres'
+  if exists (select 1 from pg_event_trigger
+               where evtname='fix_owner_grants' and evtenabled='O')
+  then
+    if v_current_user='postgres'
     then
       raise exception 'need to be a database owner/account owner to create schemas';
-    else 
+    else
       for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc loop
         v_schema_name:= v_obj.object_identity;
       end loop;
       select acm_tools.create_schema(v_schema_name) into v_result;
      end if;
-  end if;  
+  end if;
 end;
 $body$;
 
@@ -122,18 +122,18 @@ declare
   v_result text;
 begin
   v_current_user := current_user;
-  if exists (select 1 from  pg_event_trigger
-             where evtname='fix_owner_grants' and evtenabled='O')
-  then 
+  if exists (select 1 from pg_event_trigger
+               where evtname='fix_owner_grants' and evtenabled='O')
+  then
     if v_current_user='postgres'
     then
       raise exception 'need to be a schema owner to drop a schema';
     else
       select object_identity into v_schema_name
-      from pg_event_trigger_dropped_objects()
-      where object_type='schema';
+        from pg_event_trigger_dropped_objects()
+        where object_type='schema';
       select acm_tools.drop_schema_roles_sd(v_schema_name) into v_result;
     end if;
-  end if;  
+  end if;
 end;
 $body$;

@@ -63,7 +63,8 @@ begin
   current_database(),
   v_sql_role
   );
- execute v_sql;
+execute v_sql;
 return v_sql;
 end; $body$;
+
 revoke execute on function acm_tools.create_cust_account from public;

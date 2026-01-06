@@ -14,7 +14,8 @@ begin
             p_srv_user) into v_sql;
     return v_sql;
   else
-     raise exception 'You are not allowed to manage roles in schema %', p_schema_name;
- end if;
+    raise exception 'You are not allowed to manage roles in schema %', p_schema_name;
+  end if;
 end; $si$;
+
 revoke execute on function acm_tools.revoke_role from public;

@@ -1,10 +1,10 @@
 drop function if exists acm_tools.assign_schema_role_sd (text, text,text,text);
 
 create or replace function acm_tools.assign_schema_role_sd (p_schema_name text,
-p_role text,
-p_srv_user text,
-p_password text default null,
-p_update_search_path boolean default true)
+                                                            p_role text,
+                                                            p_srv_user text,
+                                                            p_password text default null,
+                                                            p_update_search_path boolean default true)
 RETURNS text
 AS
 $func$
@@ -15,8 +15,8 @@ v_role_name text;
 BEGIN
   if not acm_tools.check_stack('acm_tools.assign_schema_role ')
     and not acm_tools.check_stack('acm_tools.create_schema_roles')
-     then
-     raise exception 'You are not allowed to assign roles in schema %', p_schema_name;
+  then
+    raise exception 'You are not allowed to assign roles in schema %', p_schema_name;
   end if;
   v_role_name:=case lower(p_role)
                   when 'read_write' then p_schema_name||'_read_write'
@@ -26,20 +26,20 @@ BEGIN
   select count(*) into v_cnt from pg_authid where rolname=p_srv_user;
   if v_cnt=0 then --new user
     if p_password is null then
-       raise exception 'NULL password for new user: %', p_srv_user;
+      raise exception 'NULL password for new user: %', p_srv_user;
     else
-    v_sql:=$$create user $$||p_srv_user||  $$ password $$|| quote_literal(p_password)||$$;$$;
+      v_sql:=$$create user $$||p_srv_user|| $$ password $$|| quote_literal(p_password)||$$;$$;
     end if;
   else -- user exists
     if p_password is not null then
-        v_sql:=$$alter user $$||p_srv_user||  $$ password $$|| quote_literal(p_password)||$$;$$;
-   else
-    v_sql:=' ';
-  end if;
+      v_sql:=$$alter user $$||p_srv_user|| $$ password $$|| quote_literal(p_password)||$$;$$;
+    else
+      v_sql:=' ';
+    end if;
   end if; --user exists
   v_sql:=v_sql||$$ grant $$||v_role_name||$$ to $$||p_srv_user||$$;$$;
   if p_update_search_path
-     then v_sql:=v_sql ||$$ alter user $$||p_srv_user||$$ set search_path to $$||p_schema_name||$$, public;$$;
+    then v_sql:=v_sql ||$$ alter user $$||p_srv_user||$$ set search_path to $$||p_schema_name||$$, public;$$;
   end if;
   execute v_sql;
   RETURN v_sql;
@@ -47,4 +47,4 @@ END;
 $func$
 language plpgsql security definer;
 
-revoke execute on function acm_tools.assign_schema_role_sd (text, text,text,text,boolean) from public;
+revoke execute on function acm_tools.assign_schema_role_sd (text, text, text, text, boolean) from public;
