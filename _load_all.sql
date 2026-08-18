@@ -1,5 +1,27 @@
 begin;
- create schema if not exists acm_tools;
+
+do $$
+declare
+  v_trigger record;
+begin
+  for v_trigger in
+    select evtname
+      from pg_event_trigger
+     where
+      evtname in (
+          'disable_event_triggers', 
+          'enable_event_triggers',
+          'create_roles_for_schema', 
+          'drop_roles_for)schema',
+          'rename_roles_for_schema',
+          'fix_owner_grants')
+  loop
+    execute format('drop event trigger %I ', v_trigger.evtname);
+  end loop;
+end;
+$$;
+	
+create schema if not exists acm_tools;
 
 \ir sql/tables/allowed_role.sql
 \ir sql/tables/account_role.sql
@@ -27,7 +49,11 @@ begin;
 \ir sql/functions/revoke_schema_ro_role.sql
 \ir sql/functions/revoke_schema_schema_owner_role.sql
 \ir sql/functions/terminate_process.sql
+\ir sql/functions/list_account_schemas.sql
+\ir sql/procedures/public_to_private.sql
+\ir sql/procedures/reset_schema_owner.sql
 \ir sql/packages/list_users_privs.sql
+\ir sql/packages/list_schemas_roles_flat.sql
 
 do $$
 declare
@@ -39,14 +65,14 @@ begin
   from
     pg_event_trigger
   where
-    evtname = 'fix_perm_after';
+    evtname = 'fix_owner_grants';
   if v_cnt > 0 then
      perform acm_tools.enable_security;
   end if;  
    for v_rec in (select substr(account_role_name, 1, length(account_role_name)-position (reverse('_owner') in reverse(account_role_name))-6) as account 
                 from acm_tools.account_role) 
      loop
-        perform acm_tools.perm_create_cust_account(v_rec.account);
+        perform acm_tools.create_cust_account(v_rec.account);
     end loop;
 end;
 $$;
