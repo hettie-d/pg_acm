@@ -92,19 +92,15 @@ declare
   v_result text;
 begin
   v_current_user := current_user;
-  if exists (select 1 from  pg_event_trigger
-           where evtname='fix_owner_grants' and evtenabled='O')
-  then  
-    if  v_current_user='postgres'
-    then
-      raise exception 'need to be a database owner/account owner to create schemas';
-    else 
-      for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc loop
-        v_schema_name:= v_obj.object_identity;
-      end loop;
+  if  v_current_user='postgres'
+  then
+    raise exception 'need to be a database owner/account owner to create schemas';
+  else
+    for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc limit 1 loop
+      v_schema_name:= v_obj.object_identity;
       select acm_tools.create_schema(v_schema_name) into v_result;
-     end if;
-  end if;  
+    end loop;
+  end if;
 end;
 $body$;
 
@@ -157,20 +153,16 @@ begin
       (regexp_split_to_array(v_command,' +'))[3]));
   v_action:=lower((select 
       (regexp_split_to_array(v_command,' +'))[4]));    
-  if exists (select 1 from  pg_event_trigger
-             where evtname='fix_perm_after' and evtenabled='O')
-  then 
-    select object_identity into v_schema_name
+  select object_identity into v_schema_name
     from pg_event_trigger_ddl_commands () 
     where object_type='schema';
-    if v_action ='rename' and v_current_user !='postgres'
+  if v_action ='rename' and v_current_user !='postgres'
     then
-      select acm_tools.perm_rename_roles_for_schema_sd (v_old_schema_name, v_schema_name) into v_result;
+      select acm_tools.rename_roles_for_schema_sd (v_old_schema_name, v_schema_name) into v_result;
     elseif
       v_action ='rename' and v_current_user ='postgres'         
     then raise exception 'need to be a schema owner to rename the schema'; 
-    end if;
-  end if;  
+    end if;  
 end;
 $body$;
 

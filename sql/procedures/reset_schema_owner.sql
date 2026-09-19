@@ -2,7 +2,7 @@ drop procedure if exists acm_tools.perm_reset_schema_owner(text, text, text);
 
 drop procedure if exists acm_tools.perm_reset_schema_owner(text, text, text, text);
 
-create or replace procedure acm_tools.perm_reset_schema_owner(p_schema_name text,
+create or replace procedure acm_tools.reset_schema_owner(p_schema_name text,
  p_owner text,
  p_prev_api text default null)
  language plpgsql 
@@ -15,9 +15,9 @@ create or replace procedure acm_tools.perm_reset_schema_owner(p_schema_name text
  v_prev_owner text;
  begin
  select count(*) into v_cnt from pg_authid where rolname=p_owner;
- if v_cnt=0 then --new user
-   execute $$create role $$||p_owner;
- end if;
+  if v_cnt=0 then --new user
+    execute $$create role $$||p_owner;
+    end if;
  select pg_get_userbyid(nspowner) into v_prev_owner from pg_namespace where nspname =p_schema_name;    
  v_sql:=$$ alter schema $$||p_schema_name||$$ owner to $$||p_owner ||$$;
     alter default privileges for user $$||v_prev_owner||$$ in schema $$||
@@ -160,4 +160,4 @@ end loop;
 execute $$revoke all on schema  $$||p_schema_name||$$ from $$||v_prev_owner;
 end;$body$;
 
-revoke execute on procedure acm_tools.perm_reset_schema_owner from public;
+revoke execute on procedure acm_tools.reset_schema_owner from public;

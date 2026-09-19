@@ -3,7 +3,7 @@
 --Moves all user-defined objects from public schema top private schema defined by p_schema_name parameter
 -- Leaves all extension objects in the public schema
 --
-create or replace procedure pg_acm.public_to_private (p_schema_name text)
+create or replace procedure acm_tools.public_to_private (p_schema_name text)
 language plpgsql as
 $func$
 declare 
@@ -184,4 +184,4 @@ end loop;
 end;
 $func$;
 
-revoke execute on procedure pg_acm.public_to_private from public;
+revoke execute on procedure acm_tools.public_to_private from public;

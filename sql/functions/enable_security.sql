@@ -32,7 +32,7 @@ if p_drop_trigger then
   create event trigger rename_roles_for_schema 
      on ddl_command_end
      when tag in ('ALTER SCHEMA')
-       execute function acm_tools.perm_rename_roles_for_schema();      
+       execute function acm_tools.rename_roles_for_schema();      
   
   create event trigger disable_event_triggers on ddl_command_start 
      when tag in ('CREATE EXTENSION', 'ALTER EXTENSION')
@@ -40,7 +40,7 @@ if p_drop_trigger then
   
   create event trigger enable_event_triggers on ddl_command_end
      when tag in ('CREATE EXTENSION', 'ALTER EXTENSION')
-       execute function acm_tools.perm_enable_event_triggers();      
+       execute function acm_tools.enable_event_triggers();      
   $trg$;
 end if;
 v_db_owner:=(select
@@ -71,7 +71,7 @@ grant execute on function acm_tools.revoke_schema_schema_owner_role to $$||v_db_
 grant execute on function acm_tools.revoke_schema_ro_role to $$||v_db_owner||$$;
 grant execute on function acm_tools.check_schema_perm to $$||v_db_owner||$$;
 grant execute on function acm_tools.assign_role(text, text, text) to $$||v_db_owner||$$;
-grant execute on function dba_tools.list_account_schemas to $$||v_db_owner||$$;
+grant execute on function acm_tools.list_account_schemas to $$||v_db_owner||$$;
 grant execute on function acm_tools.terminate_process to $$||v_db_owner;
 
 execute v_sql;

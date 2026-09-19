@@ -9,8 +9,6 @@ declare
   v_account text;
   v_db_owner text;
   v_schema_admin text;
-  v_account_owner_setting boolean;
-  v_schema_owner_setting boolean;
   v_cnt int;
 begin
    with recursive x as
@@ -64,8 +62,7 @@ begin
     v_schema_admin :=v_account||'_owner';
   return (select acm_tools.create_schema_sd(
               p_schema_name,
-              v_schema_admin,
-              v_schema_owner_setting));
+              v_schema_admin));
   end;
 $create_schema$;
 

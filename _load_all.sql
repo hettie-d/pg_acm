@@ -35,6 +35,7 @@ create schema if not exists acm_tools;
 \ir sql/functions/drop_schema_roles_sd.sql
 \ir sql/functions/create_role.sql
 \ir sql/functions/create_role_for_schema.sql
+\ir sql/functions/rename_roles_for_schema_sd.sql
 \ir sql/functions/assign_account_role.sql 
 \ir sql/functions/assign_role.sql
 \ir sql/functions/assign_schema_app_role.sql
@@ -50,10 +51,13 @@ create schema if not exists acm_tools;
 \ir sql/functions/revoke_schema_schema_owner_role.sql
 \ir sql/functions/terminate_process.sql
 \ir sql/functions/list_account_schemas.sql
+\ir sql/functions/drop_cust_account.sql
+\ir sql/functions/drop_cust_account_sd.sql
 \ir sql/procedures/public_to_private.sql
 \ir sql/procedures/reset_schema_owner.sql
-\ir sql/packages/list_users_privs.sql
-\ir sql/packages/list_schemas_roles_flat.sql
+\ir sql/packages/list_users_privs_pkg.sql
+\ir sql/packages/list_acct_schemas_roles_pkg.sql
+
 
 do $$
 declare
