@@ -92,19 +92,15 @@ declare
   v_result text;
 begin
   v_current_user := current_user;
-  if exists (select 1 from  pg_event_trigger
-           where evtname='fix_owner_grants' and evtenabled='O')
-  then  
-    if  v_current_user='postgres'
-    then
-      raise exception 'need to be a database owner/account owner to create schemas';
-    else 
-      for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc loop
-        v_schema_name:= v_obj.object_identity;
-      end loop;
+  if  v_current_user='postgres'
+  then
+    raise exception 'need to be a database owner/account owner to create schemas';
+  else
+    for v_obj in select * from pg_event_trigger_ddl_commands () order by object_type desc limit 1 loop
+      v_schema_name:= v_obj.object_identity;
       select acm_tools.create_schema(v_schema_name) into v_result;
-     end if;
-  end if;  
+    end loop;
+  end if;
 end;
 $body$;
 
@@ -137,3 +133,78 @@ begin
   end if;  
 end;
 $body$;
+
+create or replace function acm_tools.rename_roles_for_schema()
+  returns event_trigger
+  language 'plpgsql'
+as $body$
+declare
+  v_obj record;
+  v_current_user text;
+  v_command text;
+  v_schema_name text;
+  v_old_schema_name text;
+  v_action text;
+  v_result text;
+begin
+  v_current_user := current_user;
+  v_command:=current_query();
+  v_old_schema_name:=lower((select 
+      (regexp_split_to_array(v_command,' +'))[3]));
+  v_action:=lower((select 
+      (regexp_split_to_array(v_command,' +'))[4]));    
+  select object_identity into v_schema_name
+    from pg_event_trigger_ddl_commands () 
+    where object_type='schema';
+  if v_action ='rename' and v_current_user !='postgres'
+    then
+      select acm_tools.rename_roles_for_schema_sd (v_old_schema_name, v_schema_name) into v_result;
+    elseif
+      v_action ='rename' and v_current_user ='postgres'         
+    then raise exception 'need to be a schema owner to rename the schema'; 
+    end if;  
+end;
+$body$;
+
+create or replace function acm_tools.disable_event_triggers()
+  returns event_trigger
+   language 'plpgsql'
+  as $body$
+declare
+  v_trigger record;
+  v_error text;
+begin
+  for v_trigger in
+    select evtname
+      from pg_event_trigger
+     where evtenabled <> 'D'
+     and evtname not in ('disable_event_triggers', 'enable_event_triggers') order by 1
+  loop
+    execute format('alter event trigger %I disable', v_trigger.evtname);
+  end loop;
+ exception
+ when others then 
+  get stacked diagnostics v_error = message_text; 
+  raise exception 'Only superuser can create extension; error: %', v_error; 
+end;
+$body$;
+
+revoke execute on function acm_tools.disable_event_triggers() from public;
+
+create or replace function acm_tools.enable_event_triggers()
+  returns event_trigger
+  language 'plpgsql' as $body$
+declare
+  v_trigger record;
+begin
+  for v_trigger in
+    select evtname
+      from pg_event_trigger
+     where evtenabled = 'D'
+  loop
+    execute format('alter event trigger %I enable', v_trigger.evtname);
+  end loop;
+end;
+$body$;
+revoke execute on function acm_tools.enable_event_triggers() from public;
+

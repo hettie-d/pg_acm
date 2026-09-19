@@ -1,7 +1,6 @@
 create or replace function acm_tools.create_schema_sd (
    p_schema_name text,
-   p_schema_admin text,
-   p_schema_owner_setting boolean)
+   p_schema_admin text)
 --setting up the roles together with creating schemas
 RETURNS text
 AS
@@ -29,18 +28,18 @@ BEGIN
      v_create_schema_sql:=format($sql$
         create role %s;
         alter schema %s owner to  %s;
+        revoke all on schema %s from %s;
         grant %s to %s;
-        grant all on schema %s to %s;
-        revoke all on schema %s from %s; $sql$,
+        grant all on schema %s to %s; $sql$,
         v_schema_owner,
         p_schema_name,
         v_schema_owner,
-        v_schema_owner,
+        p_schema_name,
+        v_current_schema_owner,
+        v_schema_owner,     
         p_schema_admin,
         p_schema_name,
-        v_schema_owner,
-        p_schema_name,
-        v_current_schema_owner);
+        v_schema_owner);
      v_sql:=v_create_schema_sql||
        format($sql$
          create role %s;
