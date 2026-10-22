@@ -131,11 +131,12 @@ SELECT * FROM acm_tools.revoke_schema_ro_role (
 | ------------- | ----------- | ------------------ |
 | `acm_tools.create_role('new_role')` | Creates a new role without permissions | `database owner` |
 | `acm_tools.assign_role('new_role','new_user','passwd')` | grants previously created role to a new or existing user; leave password null fo existing user | `database owner` |
+| `acm_tools.create_role_for_schema('schema_name',boolean,boolean,boolean,boolean,boolean)` | creates a role with granular privileges for schema (for example, select/insert, select/update, etc.) | `account owner` |
 
-## Other administrative functions
+## Superpowers: you need them when you want to set up access control in an existing database
 
-| Function name | Description | Permissions Needed |
+| Procedure name | Description | Permissions Needed |
 | ------------- | ----------- | ------------------ |
-| `acm_tools.terminate_process(pid)` | kills any non-superuser session | `database owner` |
-| `acm_tools.db_direct_privs_select()` | lists all directly granted privileges | `database owner` |
-| `acm_tools.db_all_privs_select()` | lists all atomic privileges for all db users | `database owner` |
+| `acm_tools.public_to_private('schema_name')` | moves all customer data from public schema to a new schema, specified by parameter | `superuser` |
+| `acm_tools.reset_schema_owner('schema_name', 'new_owner','read_write user' - optional)` | switches the schema owner | `superuser` |
+|
