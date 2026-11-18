@@ -34,21 +34,21 @@ $$,'create customer account acct1');
 
 select has_role ('acct1_owner', 'role acct1_owner was created');
 
-select function_privs_are ('acm_tools', 'create_schema_sd', array['text', 'text','boolean'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.create_schema_roles_sd');
-select function_privs_are ('acm_tools','check_schema_perm' , array['text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.create_schema_roles');
-select function_privs_are ('acm_tools','check_stack' , array['text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.check_stack');
-select function_privs_are ('acm_tools','drop_schema_roles_sd' , array['text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.drop_schema_roles_sd');
-select function_privs_are ('acm_tools','assign_schema_role' , array['text','text','text','text','boolean', 'integer'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.assign_schema_role');
-select function_privs_are ('acm_tools','assign_schema_role_sd' , array['text','text','text','text','boolean', 'integer'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.assign_schema_role_sd');
-select function_privs_are ('acm_tools','revoke_role' , array['text','text','text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.revoke_role');
-select function_privs_are ('acm_tools','revoke_role_sd' , array['text','text','text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.revoke_role_sd');
-select function_privs_are ('acm_tools','assign_schema_app_role' , array['text','text','text','boolean'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.assign_schema_app_role');
-select function_privs_are ('acm_tools','assign_schema_schema_owner_role' , array['text','text','text','boolean'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.assign_schema_schema_owner_role');
-select function_privs_are ('acm_tools','assign_schema_ro_role' , array['text','text','text','boolean'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.assign_schema_ro_role');
-select function_privs_are ('acm_tools','revoke_schema_app_role' , array['text','text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.revoke_schema_app_role');
-select function_privs_are ('acm_tools','revoke_schema_schema_owner_role' , array['text','text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.revoke_schema_schema_owner_role');
-select function_privs_are ('acm_tools','revoke_schema_ro_role' , array['text','text'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.revoke_schema_ro_role');
-select function_privs_are ('acm_tools','create_role_for_schema' , array['text','boolean','boolean','boolean','boolean','boolean'], 'acct1_owner', array['execute'], 'acct1_owner should execute acm_tools.create_role_for_schema');
+select function_privs_are ('acm_tools', 'create_schema_sd', array['text', 'text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.create_schema_roles_sd');
+select function_privs_are ('acm_tools','check_schema_perm' , array['text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.create_schema_roles');
+select function_privs_are ('acm_tools','check_stack' , array['text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.check_stack');
+select function_privs_are ('acm_tools','drop_schema_roles_sd' , array['text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.drop_schema_roles_sd');
+select function_privs_are ('acm_tools','assign_schema_role' , array['text','text','text','text','boolean', 'integer'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.assign_schema_role');
+select function_privs_are ('acm_tools','assign_schema_role_sd' , array['text','text','text','text','boolean', 'integer'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.assign_schema_role_sd');
+select function_privs_are ('acm_tools','revoke_role' , array['text','text','text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.revoke_role');
+select function_privs_are ('acm_tools','revoke_role_sd' , array['text','text','text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.revoke_role_sd');
+select function_privs_are ('acm_tools','assign_schema_app_role' , array['text','text','text','boolean'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.assign_schema_app_role');
+select function_privs_are ('acm_tools','assign_schema_schema_owner_role' , array['text','text','text','boolean'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.assign_schema_schema_owner_role');
+select function_privs_are ('acm_tools','assign_schema_ro_role' , array['text','text','text','boolean'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.assign_schema_ro_role');
+select function_privs_are ('acm_tools','revoke_schema_app_role' , array['text','text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.revoke_schema_app_role');
+select function_privs_are ('acm_tools','revoke_schema_schema_owner_role' , array['text','text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.revoke_schema_schema_owner_role');
+select function_privs_are ('acm_tools','revoke_schema_ro_role' , array['text','text'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.revoke_schema_ro_role');
+select function_privs_are ('acm_tools','create_role_for_schema' , array['text','boolean','boolean','boolean','boolean','boolean'], 'acct1_owner', array['EXECUTE'], 'acct1_owner should execute acm_tools.create_role_for_schema');
 
 select lives_ok($$
 select * from acm_tools.assign_account_role('acct1', 'acct_user1', 'acct1');
@@ -56,7 +56,7 @@ $$, 'create acct_user1 for acct1');
 
 select is(count(*)::int,1,$$alter trigger exists$$)
 from  pg_event_trigger
-             where evtname='rename_roles_for_schema' and evtenabled='o';
+             where evtname='rename_roles_for_schema' and evtenabled='O';
 
 select lives_ok($$
 select * from acm_tools.assign_account_role('acct1', 'acct_user1', 'acct2');
@@ -123,9 +123,9 @@ select isnt (-1,(select rolconnlimit from pg_roles where rolname='app23_user') ,
 
 select lives_ok ($$select * from acm_tools.assign_schema_ro_role('acct2_schema3', 'ro23_user', 'pwd');$$, 'create ro user ro23_user for schema acct2_schema3');
 
-select throws_ok($$drop schema acct1_schema2);$$,'42501', 'must be owner of schema acct1_schema2', 'you are not allowed to drop schema acct1_schema2') ;
+select throws_ok($$drop schema acct1_schema2;$$,'42501', 'must be owner of schema acct1_schema2', 'you are not allowed to drop schema acct1_schema2') ;
 
-select throws_ok($$select * from acm_tools.assign_schema_app_role('acct2_schema1', 'app21_user');$$, 'p0001','null password for new user: app21_user',
+select throws_ok($$select * from acm_tools.assign_schema_app_role('acct2_schema1', 'app21_user');$$, 'P0001','NULL password for new user: app21_user',
 $e$null password for new user: app21_user$e$);
 
 select lives_ok($$select * from acm_tools.assign_schema_app_role
@@ -166,7 +166,7 @@ select lives_ok($$select * from acm_tools.assign_schema_schema_owner_role
 ('acct1_schema1', 'acc_owner_user11', 'passwd1');$$, $$create owner user acc_owner_user11 for acct1_schema1$$);
 
 select throws_ok($$select * from acm_tools.revoke_schema_app_role
-('acct2_schema1', 'app21_user');$$, 'p0001','you are not allowed to manage roles in schema acct2_schema1', $$you are not allowed to manage roles in schema acct2_schema1$$);
+('acct2_schema1', 'app21_user');$$, 'P0001','You are not allowed to manage roles in schema acct2_schema1', $$you are not allowed to manage roles in schema acct2_schema1$$);
 
 select lives_ok($$set role acct_user2;$$,'role set to acct_user2');
 
@@ -230,13 +230,13 @@ select lives_ok($$select * from acm_tools.list_acct_schemas_roles_flat ()$$, 'li
 set role  test_db_owner;
 select * from acm_tools.create_cust_account ('acct4');
 select lives_ok($$select * from acm_tools.drop_cust_account('acct4')$$, 'empty account dropped');
-select throws_ok ($$select * from acm_tools.drop_cust_account('acct1')$$, 'p0001',
-'account acct1 still owns schemas. use option p_force=true to cascade drop', $$can't drop non-empty account without force$$);
+select throws_ok ($$select * from acm_tools.drop_cust_account('acct1')$$, 'P0001',
+'Account acct1 still owns schemas. Use option p_force=true to cascade drop', $$can't drop non-empty account without force$$);
 select lives_ok ($$select * from acm_tools.drop_cust_account('acct1', true)$$, 'drop non-empty account with force');
 
-select is(count(*)::int,0,$$no more schemas for acct3$$) from acm_tools.list_account_schemas('acct3');
+select is(count(*)::int,0,$$no more schemas for acct1$$) from acm_tools.list_account_schemas('acct1');
 
-select throws_ok($$create extension postgres_fdw;$$,'p0001', 'only superuser can create extension; error: must be owner of event trigger create_roles_for_schema', 'you are not allowed to create extensions') ;
+select throws_ok($$create extension postgres_fdw;$$,'P0001', 'Only superuser can create extension; error: must be owner of event trigger create_roles_for_schema', 'you are not allowed to create extensions') ;
 
 set role postgres; --only superuser can create extensions
 
@@ -285,3 +285,4 @@ rollback;
 drop user test_db_admin;
 drop database test_db;
 drop role test_db_owner;
+drop role acct2_sub_role;
